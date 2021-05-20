@@ -19,6 +19,13 @@ export class PostapiController {
         const posts = await this.postapiService.getPostsByProfileId(profileID);
         return res.status(HttpStatus.OK).json(posts);
     }
+    
+     @Get('news/:profileID')
+    async getNews(@Res() res, @Param('profileID') profileID: string) {
+       
+        const posts = await this.postapiService.getNews(profileID);
+        return res.status(HttpStatus.OK).json(posts);
+    }
 
     @Get('post/:postID')
     async getPost(@Res() res, @Param('postID', new ValidateObjectId()) postID)
@@ -51,7 +58,13 @@ export class PostapiController {
             post: editedPost
         })
     }
-
+    
+    @Get('posts/:searchStr')
+    async getPostsBySearchStr(@Res() res, @Param('searchStr') searchStr: string) {
+       
+        const posts = await this.postapiService.getPostsBysearchStr(searchStr);
+        return res.status(HttpStatus.OK).json(posts);
+    }
 
     @Delete('/delete')
     async deletePost(@Res() res, @Query('postID', new ValidateObjectId()) postID) {
