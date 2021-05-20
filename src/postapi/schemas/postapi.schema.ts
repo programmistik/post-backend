@@ -11,4 +11,4 @@ export const PostapiSchema = new mongoose.Schema({
     ViewsProfileId: Array,
     LikesProfileId: Array
     
-})
+}, { versionKey: false })
