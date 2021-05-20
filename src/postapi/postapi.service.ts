@@ -17,6 +17,16 @@ export class PostapiService {
         const posts = await this.postModel.find({ProfileId});
         return posts;
     }
+    
+    async getPostsBysearchStr(searchStr): Promise<Post[]> {
+        const posts = await this.postModel.find({ Title: { $regex: new RegExp("^" + searchStr, "i")  } });
+        return posts;
+    }
+
+    async getNews(ProfileId): Promise<Post[]> {
+        const posts = await this.postModel.find( { ViewsProfileId: { $ne: ProfileId }});
+        return posts;
+    }
 
     async getPost(postID): Promise<Post> {
         const post = await this.postModel
