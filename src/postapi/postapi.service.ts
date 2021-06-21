@@ -19,7 +19,7 @@ export class PostapiService {
     }
     
     async getPostsBysearchStr(searchStr): Promise<Post[]> {
-        const posts = await this.postModel.find({ Title: { $regex: new RegExp("^" + searchStr, "i")  } });
+        const posts = await this.postModel.find({ Title: { $regex: new RegExp(searchStr, "i")  } });
         return posts;
     }
 
@@ -33,6 +33,16 @@ export class PostapiService {
             .findById(postID)
             .exec();
         return post;
+    }
+
+    async getPostByUniqueId(UniqueId): Promise<Post> {
+        const post = await this.postModel.findOne({UniqueId});
+        return post;
+    }
+
+    async getPostsByHashtag(hashtag): Promise<Post[]> {
+        const posts = await this.postModel.find({ Hashtags: { $regex: new RegExp("^" + hashtag, "i") }});
+        return posts;
     }
 
     async addPost(createPostDTO: CreatePostDTO): Promise<Post> {
