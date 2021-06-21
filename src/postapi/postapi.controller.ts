@@ -19,8 +19,8 @@ export class PostapiController {
         const posts = await this.postapiService.getPostsByProfileId(profileID);
         return res.status(HttpStatus.OK).json(posts);
     }
-    
-     @Get('news/:profileID')
+
+    @Get('news/:profileID')
     async getNews(@Res() res, @Param('profileID') profileID: string) {
        
         const posts = await this.postapiService.getNews(profileID);
@@ -36,6 +36,22 @@ export class PostapiController {
 
     }
 
+    @Get('postbyunique/:UniqueId')
+    async getPostByUniqueId(@Res() res, @Param('UniqueId') UniqueId: string)
+     {
+        const post = await this.postapiService.getPostByUniqueId(UniqueId);
+        if (!post) throw new NotFoundException('Post does not exist!');
+        return res.status(HttpStatus.OK).json(post);
+
+    }
+
+    @Get('postsByHashtag/:hashtag')
+    async getPostsByHashtag(@Res() res, @Param('hashtag') hashtag: string) {
+       
+        const posts = await this.postapiService.getPostsByHashtag(hashtag);
+        return res.status(HttpStatus.OK).json(posts);
+    }
+
     @Post('/post')
     async addPost(@Res() res, @Body() createPostDTO: CreatePostDTO) {
         const newPost = await this.postapiService.addPost(createPostDTO);
@@ -46,28 +62,24 @@ export class PostapiController {
     }
 
     @Put('/edit')
-    async editPost(
-        @Res() res,
-        @Query('postID', new ValidateObjectId()) postID,
-        @Body() createPostDTO: CreatePostDTO
-    ) {
-        const editedPost = await this.postapiService.editPost(postID, createPostDTO);
-        if (!editedPost) throw new NotFoundException('Post does not exist!');
+    async editPost(@Res() res, @Body() createPostDTO: CreatePostDTO) {
+        const editedPost = await this.postapiService.editPost(createPostDTO.Id, createPostDTO);
+        if (!editedPost) throw new NotFoundException('Post does not exist!'+createPostDTO.Id+ ' ' + createPostDTO.Title);
         return res.status(HttpStatus.OK).json({
             message: 'Post has been successfully updated',
             post: editedPost
         })
     }
-    
-    @Get('posts/:searchStr')
+
+    @Get('sposts/:searchStr')
     async getPostsBySearchStr(@Res() res, @Param('searchStr') searchStr: string) {
        
         const posts = await this.postapiService.getPostsBysearchStr(searchStr);
         return res.status(HttpStatus.OK).json(posts);
     }
 
-    @Delete('/delete')
-    async deletePost(@Res() res, @Query('postID', new ValidateObjectId()) postID) {
+    @Delete('/delete/:postID')
+    async deletePost(@Res() res, @Param('postID', new ValidateObjectId()) postID) {
         const deletedPost = await this.postapiService.deletePost(postID);
         if (!deletedPost) throw new NotFoundException('Post does not exist!');
         return res.status(HttpStatus.OK).json({
